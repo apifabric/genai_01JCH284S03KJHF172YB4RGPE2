@@ -1,0 +1,110 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+// Or, view in VSCode with extension: "DBML Live Preview"
+
+Table Appointment {
+    id INTEGER [primary key]
+    pet_id INTEGER 
+    care_service_id INTEGER 
+    appointment_date DATETIME 
+    amount INTEGER 
+    }
+
+Table CareService {
+    id INTEGER [primary key]
+    name VARCHAR 
+    duration INTEGER 
+    price INTEGER 
+    }
+
+Table Pet {
+    id INTEGER [primary key]
+    name VARCHAR 
+    species VARCHAR 
+    breed VARCHAR 
+    age INTEGER 
+    owner_id INTEGER 
+    }
+
+Table Customer {
+    id INTEGER [primary key]
+    name VARCHAR 
+    email VARCHAR 
+    phone VARCHAR 
+    balance INTEGER 
+    credit_limit INTEGER 
+    }
+
+Table Employee {
+    id INTEGER [primary key]
+    name VARCHAR 
+    role VARCHAR 
+    salary INTEGER 
+    }
+
+Table Order {
+    id INTEGER [primary key]
+    customer_id INTEGER 
+    date_placed DATETIME 
+    amount_total INTEGER 
+    }
+
+Table OrderDetail {
+    id INTEGER [primary key]
+    order_id INTEGER 
+    product_id INTEGER 
+    quantity INTEGER 
+    unit_price INTEGER 
+    amount INTEGER 
+    }
+
+Table Product {
+    id INTEGER [primary key]
+    name VARCHAR 
+    category VARCHAR 
+    price INTEGER 
+    quantity_in_stock INTEGER 
+    }
+
+Table SupplyOrder {
+    id INTEGER [primary key]
+    vendor_id INTEGER 
+    date_ordered DATETIME 
+    total_amount INTEGER 
+    }
+
+Table Vendor {
+    id INTEGER [primary key]
+    name VARCHAR 
+    contact_info VARCHAR 
+    }
+
+Table SupplyOrderDetail {
+    id INTEGER [primary key]
+    supply_order_id INTEGER 
+    product_id INTEGER 
+    quantity INTEGER 
+    unit_price INTEGER 
+    amount INTEGER 
+    }
+
+Table VendorProduct {
+    id INTEGER [primary key]
+    vendor_id INTEGER 
+    product_id INTEGER 
+    }
+
+
+
+// Relationships
+    Ref: Appointment.(care_service_id) < CareService.(id)
+    Ref: Appointment.(pet_id) < Pet.(id)
+    Ref: Pet.(owner_id) < Customer.(id)
+    Ref: Order.(customer_id) < Customer.(id)
+    Ref: OrderDetail.(order_id) < Order.(id)
+    Ref: OrderDetail.(product_id) < Product.(id)
+    Ref: SupplyOrder.(vendor_id) < Vendor.(id)
+    Ref: SupplyOrderDetail.(product_id) < Product.(id)
+    Ref: SupplyOrderDetail.(supply_order_id) < SupplyOrder.(id)
+    Ref: VendorProduct.(product_id) < Product.(id)
+    Ref: VendorProduct.(vendor_id) < Vendor.(id)

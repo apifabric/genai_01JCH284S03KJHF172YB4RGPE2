@@ -1,0 +1,133 @@
+<div class="container">
+<o-form-container breadcrumb="yes" breadcrumb-label-columns="name" breadcrumb-separator=", " class="fill-form">
+      <o-form #form attr="Vendor_form_edit" 
+        service="Vendor" 
+        entity="Vendor" 
+        fxLayout="column" 
+        show-header="yes" 
+        header-actions="R;I;U;D"
+        #oDetailForm keys="id" 
+        keys-sql-types="INTEGER" 
+        show-header-navigation="yes"
+        (onDataLoaded)="onDataLoaded($event)">
+
+  <o-row attr="row1" layout-align="start stretch">
+    <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
+      
+      <o-text-input #name attr="name" label=" name*" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-text-input #contact_info attr="contact_info" label="contact_info" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+      <o-integer-input #id attr="id" label="id" type="integer" editable="no" required="no" ></o-integer-input>
+      
+    </div>
+  </o-row>
+      
+      <mat-tab-group fxFill>
+        
+        <mat-tab label="SUPPLYORDER-vendor_id">
+    <div layout-padding>
+      <o-table 
+        attr="SupplyOrderTable" 
+        service="SupplyOrder" 
+        entity="SupplyOrder" 
+        keys="id"
+        parent-keys="vendor_id:id"
+        columns="id;vendor_id;total_amount;date_ordered"  
+        horizontal-scroll="yes"
+        detail-form-route="SupplyOrder" 
+        edit-form-route="SupplyOrder"
+        visible-columns="id;vendor_id;total_amount;date_ordered"  
+        sort-columns="id" 
+        query-rows="25" 
+        quick-filter="yes"
+        row-height="medium" 
+        select-all-checkbox="true" 
+        pageable="yes"  
+        auto-adjust="true" 
+        virtual-scroll="yes" 
+        insert-button="yes" 
+        delete-button="yes" 
+        fixed-header="true" 
+        class="vertical-padding-8"
+        edition-mode="dblclick" 
+        horizontal-scroll="yes" class="fill-form">
+        
+          <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+        
+          <o-table-column attr="vendor_id" title="vendor_id">
+    <o-table-cell-renderer-service attr="vendor_id" 
+        service="Vendor" entity="VendorType" columns="id;name"
+        parent-keys="id:vendor_id"
+        value-column="name" keys="vendor_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+        
+          <o-table-column #total_amount attr="total_amount" title="total_amount" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+        
+          <o-table-column #date_ordered attr="date_ordered" title="date_ordered" editable="no" required="no" content-align="left"></o-table-column>
+        
+        <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
+      </o-table>
+    </div>
+</mat-tab>
+        
+        <mat-tab label="VENDORPRODUCT-vendor_id">
+    <div layout-padding>
+      <o-table 
+        attr="VendorProductTable" 
+        service="VendorProduct" 
+        entity="VendorProduct" 
+        keys="id"
+        parent-keys="vendor_id:id"
+        columns="id;product_id;vendor_id"  
+        horizontal-scroll="yes"
+        detail-form-route="VendorProduct" 
+        edit-form-route="VendorProduct"
+        visible-columns="id;product_id;vendor_id"  
+        sort-columns="id" 
+        query-rows="25" 
+        quick-filter="yes"
+        row-height="medium" 
+        select-all-checkbox="true" 
+        pageable="yes"  
+        auto-adjust="true" 
+        virtual-scroll="yes" 
+        insert-button="yes" 
+        delete-button="yes" 
+        fixed-header="true" 
+        class="vertical-padding-8"
+        edition-mode="dblclick" 
+        horizontal-scroll="yes" class="fill-form">
+        
+          <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+        
+          <o-table-column attr="product_id" title="product_id">
+    <o-table-cell-renderer-service attr="product_id" 
+        service="Product" entity="ProductType" columns="id;name"
+        parent-keys="id:product_id"
+        value-column="name" keys="product_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+        
+          <o-table-column attr="vendor_id" title="vendor_id">
+    <o-table-cell-renderer-service attr="vendor_id" 
+        service="Vendor" entity="VendorType" columns="id;name"
+        parent-keys="id:vendor_id"
+        value-column="name" keys="vendor_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+        
+        <o-table-paginator page-size-options="25;50;100"></o-table-paginator>
+      </o-table>
+    </div>
+</mat-tab>
+        
+      </mat-tab-group>
+      
+    </o-form>
+  </o-form-container>
+</div>

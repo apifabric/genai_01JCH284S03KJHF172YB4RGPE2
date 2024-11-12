@@ -1,0 +1,110 @@
+{
+    "models": [
+        {
+            "classname": "Customer",
+            "code": "class Customer(Base):\n    __tablename__ = 'customer'\n    \"\"\"description: Customer details including their contact information and balance\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    email = Column(String, nullable=False)\n    phone = Column(String)\n    balance = Column(Integer, default=0)\n    credit_limit = Column(Integer, default=5000)",
+            "description": "Customer details including their contact information and balance",
+            "name": "Customer"
+        },
+        {
+            "classname": "Employee",
+            "code": "class Employee(Base):\n    __tablename__ = 'employee'\n    \"\"\"description: Employee details and associated pet shop operational roles\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    role = Column(String)\n    salary = Column(Integer)",
+            "description": "Employee details and associated pet shop operational roles",
+            "name": "Employee"
+        },
+        {
+            "classname": "Pet",
+            "code": "class Pet(Base):\n    __tablename__ = 'pet'\n    \"\"\"description: Details of pets available or owned by customers\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    species = Column(String, nullable=False)\n    breed = Column(String)\n    age = Column(Integer)\n    owner_id = Column(Integer, ForeignKey('customer.id'))",
+            "description": "Details of pets available or owned by customers",
+            "name": "Pet"
+        },
+        {
+            "classname": "Product",
+            "code": "class Product(Base):\n    __tablename__ = 'product'\n    \"\"\"description: Product offerings at the pet shop\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    category = Column(String)\n    price = Column(Integer)\n    quantity_in_stock = Column(Integer)",
+            "description": "Product offerings at the pet shop",
+            "name": "Product"
+        },
+        {
+            "classname": "Order",
+            "code": "class Order(Base):\n    __tablename__ = 'orders'\n    \"\"\"description: Orders placed by customers for pets or products\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    customer_id = Column(Integer, ForeignKey('customer.id'))\n    date_placed = Column(DateTime)\n    amount_total = Column(Integer, default=0)",
+            "description": "Orders placed by customers for pets or products",
+            "name": "Order"
+        },
+        {
+            "classname": "OrderDetail",
+            "code": "class OrderDetail(Base):\n    __tablename__ = 'order_detail'\n    \"\"\"description: Details of individual line items within an order\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    order_id = Column(Integer, ForeignKey('orders.id'))\n    product_id = Column(Integer, ForeignKey('product.id'))\n    quantity = Column(Integer, nullable=False)\n    unit_price = Column(Integer, nullable=False)\n    amount = Column(Integer, default=0)",
+            "description": "Details of individual line items within an order",
+            "name": "OrderDetail"
+        },
+        {
+            "classname": "Vendor",
+            "code": "class Vendor(Base):\n    __tablename__ = 'vendor'\n    \"\"\"description: Vendors supplying products to the pet shop\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    contact_info = Column(String)",
+            "description": "Vendors supplying products to the pet shop",
+            "name": "Vendor"
+        },
+        {
+            "classname": "VendorProduct",
+            "code": "class VendorProduct(Base):\n    __tablename__ = 'vendor_product'\n    \"\"\"description: Relationship between vendors and products they supply\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    vendor_id = Column(Integer, ForeignKey('vendor.id'))\n    product_id = Column(Integer, ForeignKey('product.id'))",
+            "description": "Relationship between vendors and products they supply",
+            "name": "VendorProduct"
+        },
+        {
+            "classname": "CareService",
+            "code": "class CareService(Base):\n    __tablename__ = 'care_service'\n    \"\"\"description: Pet care services offered at the shop\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    duration = Column(Integer)  # in minutes\n    price = Column(Integer)",
+            "description": "Pet care services offered at the shop",
+            "name": "CareService"
+        },
+        {
+            "classname": "Appointment",
+            "code": "class Appointment(Base):\n    __tablename__ = 'appointment'\n    \"\"\"description: Appointments for pet care services\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    pet_id = Column(Integer, ForeignKey('pet.id'))\n    care_service_id = Column(Integer, ForeignKey('care_service.id'))\n    appointment_date = Column(DateTime)\n    amount = Column(Integer, default=0)",
+            "description": "Appointments for pet care services",
+            "name": "Appointment"
+        },
+        {
+            "classname": "SupplyOrder",
+            "code": "class SupplyOrder(Base):\n    __tablename__ = 'supply_order'\n    \"\"\"description: Orders placed to vendors for supplying products\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    vendor_id = Column(Integer, ForeignKey('vendor.id'))\n    date_ordered = Column(DateTime)\n    total_amount = Column(Integer, default=0)",
+            "description": "Orders placed to vendors for supplying products",
+            "name": "SupplyOrder"
+        },
+        {
+            "classname": "SupplyOrderDetail",
+            "code": "class SupplyOrderDetail(Base):\n    __tablename__ = 'supply_order_detail'\n    \"\"\"description: Details of supplies ordered in each vendor order\"\"\"\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    supply_order_id = Column(Integer, ForeignKey('supply_order.id'))\n    product_id = Column(Integer, ForeignKey('product.id'))\n    quantity = Column(Integer, nullable=False)\n    unit_price = Column(Integer, nullable=False)\n    amount = Column(Integer, default=0)",
+            "description": "Details of supplies ordered in each vendor order",
+            "name": "SupplyOrderDetail"
+        }
+    ],
+    "rules": [
+        {
+            "name": "Order Balance Computation",
+            "description": "Updates the customer's balance based on open orders.",
+            "use_case": "Compute customer balance as the sum of Order.amount_total where date_shipped is null.",
+            "code": "Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total, where=lambda row: row.date_shipped is None)"
+        },
+        {
+            "name": "Order Amount Total Formulation",
+            "description": "Calculates the total amount of an order from its details.",
+            "use_case": "Sum up OrderDetails to get Order.amount_total.",
+            "code": "Rule.sum(derive=Order.amount_total, as_sum_of=OrderDetail.amount)"
+        },
+        {
+            "name": "OrderDetail Amount Calculation",
+            "description": "Calculates the amount for each order detail line.",
+            "use_case": "Compute amount as a product of quantity and unit_price in OrderDetail.",
+            "code": "Rule.formula(derive=OrderDetail.amount, as_expression=lambda row: row.quantity * row.unit_price)"
+        },
+        {
+            "name": "Item Unit Price Copying",
+            "description": "Copies the unit price from Product to Item.",
+            "use_case": "Copy Product.unit_price into OrderDetail.unit_price when creating details.",
+            "code": "Rule.copy(derive=OrderDetail.unit_price, from_parent=Product.price)"
+        },
+        {
+            "name": "Customer Credit Limit Check",
+            "description": "Ensure customer balance does not exceed credit limit for Check Credit requirement.",
+            "use_case": "Balances must not surpass credit limit.",
+            "code": "Rule.constraint(validate=Customer, as_condition=lambda row: row.balance <= row.credit_limit, error_msg=\"Customer balance ({row.balance}) exceeds credit limit ({row.credit_limit})\")"
+        }
+    ],
+    "test_data": "from datetime import date\n\n# Create test data for Customer\ncustomer1 = Customer(id=1, name=\"John Doe\", email=\"john@example.com\", phone=\"123-456-7890\", balance=100, credit_limit=5000)\ncustomer2 = Customer(id=2, name=\"Jane Smith\", email=\"jane@example.com\", phone=\"098-765-4321\", balance=150, credit_limit=3000)\ncustomer3 = Customer(id=3, name=\"Albert White\", email=\"albert@example.com\", phone=\"123-123-1234\", balance=200, credit_limit=7000)\ncustomer4 = Customer(id=4, name=\"Mary Jones\", email=\"mary@example.com\", phone=\"321-321-4321\", balance=350, credit_limit=4000)\n\n# Create test data for Employee\nemployee1 = Employee(id=1, name=\"Alice\", role=\"Manager\", salary=50000)\nemployee2 = Employee(id=2, name=\"Bob\", role=\"Clerk\", salary=30000)\nemployee3 = Employee(id=3, name=\"Charlie\", role=\"Vet\", salary=60000)\nemployee4 = Employee(id=4, name=\"Diana\", role=\"Groomer\", salary=40000)\n\n# Create test data for Pet\npet1 = Pet(id=1, name=\"Fido\", species=\"Dog\", breed=\"Beagle\", age=3, owner_id=1)\npet2 = Pet(id=2, name=\"Whiskers\", species=\"Cat\", breed=\"Siamese\", age=2, owner_id=2)\npet3 = Pet(id=3, name=\"Goldie\", species=\"Fish\", breed=\"Goldfish\", age=1, owner_id=3)\npet4 = Pet(id=4, name=\"Polly\", species=\"Bird\", breed=\"Parrot\", age=4, owner_id=4)\n\n# Create test data for Product\nproduct1 = Product(id=1, name=\"Dog Food\", category=\"Pet Food\", price=20, quantity_in_stock=100)\nproduct2 = Product(id=2, name=\"Cat Litter\", category=\"Pet Supplies\", price=12, quantity_in_stock=50)\nproduct3 = Product(id=3, name=\"Aquarium\", category=\"Pet Accessories\", price=85, quantity_in_stock=20)\nproduct4 = Product(id=4, name=\"Bird Cage\", category=\"Pet Accessories\", price=50, quantity_in_stock=15)\n\n# Create test data for Order\norder1 = Order(id=1, customer_id=1, date_placed=date(2023, 10, 5), amount_total=60)\norder2 = Order(id=2, customer_id=2, date_placed=date(2023, 10, 6), amount_total=80)\norder3 = Order(id=3, customer_id=3, date_placed=date(2023, 10, 7), amount_total=120)\norder4 = Order(id=4, customer_id=4, date_placed=date(2023, 10, 8), amount_total=160)\n\n# Create test data for OrderDetail\norder_detail1 = OrderDetail(id=1, order_id=1, product_id=1, quantity=2, unit_price=20, amount=40)\norder_detail2 = OrderDetail(id=2, order_id=2, product_id=2, quantity=3, unit_price=12, amount=36)\norder_detail3 = OrderDetail(id=3, order_id=3, product_id=3, quantity=1, unit_price=85, amount=85)\norder_detail4 = OrderDetail(id=4, order_id=4, product_id=4, quantity=2, unit_price=50, amount=100)\n\n# Create test data for Vendor\nvendor1 = Vendor(id=1, name=\"Pet Supplies Co.\", contact_info=\"contact@petsupplies.com\")\nvendor2 = Vendor(id=2, name=\"Animal Essentials\", contact_info=\"info@animalessentials.com\")\nvendor3 = Vendor(id=3, name=\"VetCare\", contact_info=\"support@vetcare.com\")\nvendor4 = Vendor(id=4, name=\"Happy Pets\", contact_info=\"service@happypets.com\")\n\n# Create test data for VendorProduct\nvendor_product1 = VendorProduct(id=1, vendor_id=1, product_id=1)\nvendor_product2 = VendorProduct(id=2, vendor_id=2, product_id=2)\nvendor_product3 = VendorProduct(id=3, vendor_id=3, product_id=3)\nvendor_product4 = VendorProduct(id=4, vendor_id=4, product_id=4)\n\n# Create test data for CareService\ncare_service1 = CareService(id=1, name=\"Grooming\", duration=60, price=30)\ncare_service2 = CareService(id=2, name=\"Vaccination\", duration=15, price=20)\ncare_service3 = CareService(id=3, name=\"Training\", duration=120, price=50)\ncare_service4 = CareService(id=4, name=\"Check-up\", duration=20, price=40)\n\n# Create test data for Appointment\nappointment1 = Appointment(id=1, pet_id=1, care_service_id=1, appointment_date=date(2023, 10, 10), amount=30)\napppointment2 = Appointment(id=2, pet_id=2, care_service_id=2, appointment_date=date(2023, 10, 11), amount=20)\napppointment3 = Appointment(id=3, pet_id=3, care_service_id=3, appointment_date=date(2023, 10, 12), amount=50)\napppointment4 = Appointment(id=4, pet_id=4, care_service_id=4, appointment_date=date(2023, 10, 13), amount=40)\n\n# Create test data for SupplyOrder\nsupply_order1 = SupplyOrder(id=1, vendor_id=1, date_ordered=date(2023, 9, 1), total_amount=1000)\nsupply_order2 = SupplyOrder(id=2, vendor_id=2, date_ordered=date(2023, 9, 5), total_amount=1500)\nsupply_order3 = SupplyOrder(id=3, vendor_id=3, date_ordered=date(2023, 9, 10), total_amount=2200)\nsupply_order4 = SupplyOrder(id=4, vendor_id=4, date_ordered=date(2023, 9, 15), total_amount=3000)\n\n# Create test data for SupplyOrderDetail\nsupply_order_detail1 = SupplyOrderDetail(id=1, supply_order_id=1, product_id=1, quantity=50, unit_price=20, amount=1000)\nsupply_order_detail2 = SupplyOrderDetail(id=2, supply_order_id=2, product_id=2, quantity=125, unit_price=12, amount=1500)\nsupply_order_detail3 = SupplyOrderDetail(id=3, supply_order_id=3, product_id=3, quantity=20, unit_price=110, amount=2200)\nsupply_order_detail4 = SupplyOrderDetail(id=4, supply_order_id=4, product_id=4, quantity=60, unit_price=50, amount=3000)\n",
+    "name": "PetShop"
+}

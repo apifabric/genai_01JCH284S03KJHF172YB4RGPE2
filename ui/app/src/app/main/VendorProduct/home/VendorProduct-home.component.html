@@ -1,0 +1,49 @@
+<o-form-layout-manager attr="VendorProduct" mode="tab" title="VENDORPRODUCT">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="VendorProductTable" 
+            service="VendorProduct" 
+            entity="VendorProduct" 
+            title="VENDORPRODUCT"
+            keys="id"
+            columns="id;product_id;vendor_id" 
+            header-actions="R;D"
+            visible-columns="id;product_id;vendor_id"  
+            sort-columns="id" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #id attr="id" title=" id*" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column attr="product_id" title="product_id">
+    <o-table-cell-renderer-service attr="product_id" 
+        service="Product" entity="ProductType" columns="id;name"
+        parent-keys="id:product_id"
+        value-column="name" keys="product_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column attr="vendor_id" title="vendor_id">
+    <o-table-cell-renderer-service attr="vendor_id" 
+        service="Vendor" entity="VendorType" columns="id;name"
+        parent-keys="id:vendor_id"
+        value-column="name" keys="vendor_id"
+        visible-columns="name" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

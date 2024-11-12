@@ -1,0 +1,318 @@
+about:
+  date: November 12, 2024 20:51:12
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 11
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  Appointment:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: care_service_id
+    - name: pet_id
+    - name: appointment_date
+      type: DATETIME
+    - name: amount
+    tab_groups:
+    - direction: toone
+      fks:
+      - care_service_id
+      name: care_service
+      resource: CareService
+    - direction: toone
+      fks:
+      - pet_id
+      name: pet
+      resource: Pet
+    type: Appointment
+    user_key: id
+  CareService:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: duration
+    - name: price
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - care_service_id
+      name: AppointmentList
+      resource: Appointment
+    type: CareService
+    user_key: name
+  Customer:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: email
+      required: true
+    - name: phone
+    - name: balance
+    - name: credit_limit
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - customer_id
+      name: OrderList
+      resource: Order
+    - direction: tomany
+      fks:
+      - owner_id
+      name: PetList
+      resource: Pet
+    type: Customer
+    user_key: name
+  Employee:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: role
+    - name: salary
+    - name: id
+    type: Employee
+    user_key: name
+  Order:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: customer_id
+    - name: amount_total
+    - name: date_placed
+      type: DATETIME
+    tab_groups:
+    - direction: tomany
+      fks:
+      - order_id
+      name: OrderDetailList
+      resource: OrderDetail
+    - direction: toone
+      fks:
+      - customer_id
+      name: customer
+      resource: Customer
+    type: Order
+    user_key: id
+  OrderDetail:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: order_id
+    - name: product_id
+    - name: quantity
+      required: true
+    - name: unit_price
+      required: true
+    - name: amount
+    tab_groups:
+    - direction: toone
+      fks:
+      - order_id
+      name: order
+      resource: Order
+    - direction: toone
+      fks:
+      - product_id
+      name: product
+      resource: Product
+    type: OrderDetail
+    user_key: id
+  Pet:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: owner_id
+    - name: species
+      required: true
+    - name: age
+    - name: id
+    - name: breed
+    tab_groups:
+    - direction: tomany
+      fks:
+      - pet_id
+      name: AppointmentList
+      resource: Appointment
+    - direction: toone
+      fks:
+      - owner_id
+      name: owner
+      resource: Customer
+    type: Pet
+    user_key: name
+  Product:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: category
+    - name: price
+    - name: quantity_in_stock
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - product_id
+      name: OrderDetailList
+      resource: OrderDetail
+    - direction: tomany
+      fks:
+      - product_id
+      name: SupplyOrderDetailList
+      resource: SupplyOrderDetail
+    - direction: tomany
+      fks:
+      - product_id
+      name: VendorProductList
+      resource: VendorProduct
+    type: Product
+    user_key: name
+  SupplyOrder:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: vendor_id
+    - name: total_amount
+    - name: date_ordered
+      type: DATETIME
+    tab_groups:
+    - direction: tomany
+      fks:
+      - supply_order_id
+      name: SupplyOrderDetailList
+      resource: SupplyOrderDetail
+    - direction: toone
+      fks:
+      - vendor_id
+      name: vendor
+      resource: Vendor
+    type: SupplyOrder
+    user_key: id
+  SupplyOrderDetail:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: product_id
+    - name: supply_order_id
+    - name: quantity
+      required: true
+    - name: unit_price
+      required: true
+    - name: amount
+    tab_groups:
+    - direction: toone
+      fks:
+      - product_id
+      name: product
+      resource: Product
+    - direction: toone
+      fks:
+      - supply_order_id
+      name: supply_order
+      resource: SupplyOrder
+    type: SupplyOrderDetail
+    user_key: id
+  Vendor:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: contact_info
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - vendor_id
+      name: SupplyOrderList
+      resource: SupplyOrder
+    - direction: tomany
+      fks:
+      - vendor_id
+      name: VendorProductList
+      resource: VendorProduct
+    type: Vendor
+    user_key: name
+  VendorProduct:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: product_id
+    - name: vendor_id
+    tab_groups:
+    - direction: toone
+      fks:
+      - product_id
+      name: product
+      resource: Product
+    - direction: toone
+      fks:
+      - vendor_id
+      name: vendor
+      resource: Vendor
+    type: VendorProduct
+    user_key: id
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'
